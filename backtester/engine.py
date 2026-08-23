@@ -184,4 +184,7 @@ def compare_all(
         "strategy_final_value": strategy_final,
         "buy_hold_final_value": buy_hold_final,
         "sp500_final_value": sp500_final,
+        "strategy_results": strategy_results,
+        "buy_hold_results": buy_hold_results,
+        "sp500_results": sp500_results,
     }
