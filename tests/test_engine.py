@@ -3,6 +3,11 @@ import pytest
 
 from backtester.engine import Backtest
 from backtester.strategies import BuyAndHoldStrategy
+from backtester.metrics import (
+    max_drawdown,
+    sharpe_ratio,
+    total_return,
+)
 
 
 def test_backtest_runs():
@@ -60,3 +65,40 @@ def test_backtest_empty_data():
             strategy=strategy,
             initial_capital=1000
         )
+
+def test_backtest_metrics():
+    data = pd.DataFrame(
+        {
+            "Close": [100, 110, 120]
+        }
+    )
+
+    strategy = BuyAndHoldStrategy()
+
+    backtest = Backtest(
+        data=data,
+        strategy=strategy,
+        initial_capital=1000
+    )
+
+    results = backtest.run()
+
+    final_value = results["PortfolioValue"].iloc[-1]
+
+    return_value = total_return(
+        initial_capital=1000,
+        final_value=final_value
+    )
+
+    drawdown = max_drawdown(
+        results["PortfolioValue"]
+    )
+
+    sharpe = sharpe_ratio(
+        results["PortfolioValue"]
+    )
+
+    assert final_value == 1200
+    assert return_value == 20
+    assert drawdown == 0
+    assert sharpe >= 0
