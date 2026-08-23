@@ -37,6 +37,7 @@ def sharpe_ratio(
         / returns.std()
     ) * np.sqrt(252)
 
+
 def risked_capital(trades: list[dict]) -> float:
     buy_amounts = [
         trade["price"] * trade["quantity"]

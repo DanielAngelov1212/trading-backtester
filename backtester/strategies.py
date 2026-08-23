@@ -21,6 +21,7 @@ class BuyAndHoldStrategy(Strategy):
 
         return signals
 
+
 class MovingAverageStrategy(Strategy):
 
     def __init__(
@@ -69,6 +70,7 @@ class MovingAverageStrategy(Strategy):
 
         return signals
 
+
 class RSIStrategy(Strategy):
 
     def __init__(
@@ -103,6 +105,7 @@ class RSIStrategy(Strategy):
                 signals.iloc[i] = "SELL"
 
         return signals
+
 
 class MACDStrategy(Strategy):
 

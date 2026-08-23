@@ -34,6 +34,7 @@ def test_buy_and_hold_empty_data():
 
     assert signals.empty
 
+
 def test_moving_average_strategy_returns_signals():
     data = pd.DataFrame(
         {
@@ -64,6 +65,7 @@ def test_moving_average_invalid_periods():
             long_period=5
         )
 
+
 def test_moving_average_generates_buy_signal():
     data = pd.DataFrame(
         {
@@ -82,6 +84,7 @@ def test_moving_average_generates_buy_signal():
     signals = strategy.generate_signals(data)
 
     assert "BUY" in signals.values
+
 
 def test_rsi_strategy_returns_signals():
     data = pd.DataFrame(
@@ -125,6 +128,7 @@ def test_rsi_strategy_invalid_thresholds():
             oversold=80,
             overbought=20
         )
+
 
 def test_macd_strategy_returns_signals():
     data = pd.DataFrame(

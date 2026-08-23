@@ -48,6 +48,7 @@ class Backtest:
 
         return results
 
+
 def compare_with_buy_and_hold(
     data: pd.DataFrame,
     strategy: Strategy,
@@ -83,6 +84,7 @@ def compare_with_buy_and_hold(
             buy_hold_final
         ),
     }
+
 
 def compare_with_sp500(
     data: pd.DataFrame,
@@ -128,6 +130,7 @@ def compare_with_sp500(
             sp500_final
         ),
     }
+
 
 def compare_all(
     data: pd.DataFrame,

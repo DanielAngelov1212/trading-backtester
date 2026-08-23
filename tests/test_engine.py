@@ -4,7 +4,6 @@ import pytest
 from backtester.engine import (
     Backtest,
     compare_with_buy_and_hold,
-    compare_with_sp500,
 )
 from backtester.strategies import BuyAndHoldStrategy
 from backtester.metrics import (
@@ -70,6 +69,7 @@ def test_backtest_empty_data():
             initial_capital=1000
         )
 
+
 def test_backtest_metrics():
     data = pd.DataFrame(
         {
@@ -106,6 +106,7 @@ def test_backtest_metrics():
     assert return_value == 20
     assert drawdown == 0
     assert sharpe >= 0
+
 
 def test_compare_with_buy_and_hold():
     data = pd.DataFrame(

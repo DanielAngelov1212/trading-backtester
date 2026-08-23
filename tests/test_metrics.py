@@ -53,6 +53,7 @@ def test_sharpe_ratio_constant_values():
 
     assert result == 0
 
+
 def test_risked_capital():
     trades = [
         {

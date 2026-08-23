@@ -20,6 +20,7 @@ def test_sma_invalid_period():
     with pytest.raises(ValueError):
         sma(prices, 0)
 
+
 def test_ema():
     prices = pd.Series([10, 20, 30, 40, 50])
 
@@ -34,6 +35,7 @@ def test_ema_invalid_period():
 
     with pytest.raises(ValueError):
         ema(prices, 0)
+
 
 def test_rsi():
     prices = pd.Series([
@@ -54,6 +56,7 @@ def test_rsi_invalid_period():
 
     with pytest.raises(ValueError):
         rsi(prices, 0)
+
 
 def test_macd():
     prices = pd.Series([
