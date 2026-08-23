@@ -4,6 +4,7 @@ import pytest
 from backtester.engine import (
     Backtest,
     compare_with_buy_and_hold,
+    compare_with_sp500,
 )
 from backtester.strategies import BuyAndHoldStrategy
 from backtester.metrics import (

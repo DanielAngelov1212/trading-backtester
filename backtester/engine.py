@@ -1,5 +1,6 @@
 import pandas as pd
 
+from backtester.data import load_stock_data
 from backtester.portfolio import Portfolio
 from backtester.metrics import total_return
 from backtester.strategies import (
@@ -80,5 +81,50 @@ def compare_with_buy_and_hold(
         "buy_hold_return": total_return(
             initial_capital,
             buy_hold_final
+        ),
+    }
+
+def compare_with_sp500(
+    data: pd.DataFrame,
+    strategy: Strategy,
+    initial_capital: float,
+    start: str,
+    end: str
+) -> dict:
+    strategy_backtest = Backtest(
+        data=data,
+        strategy=strategy,
+        initial_capital=initial_capital
+    )
+
+    strategy_results = strategy_backtest.run()
+
+    sp500_data = load_stock_data(
+        ticker="^GSPC",
+        start=start,
+        end=end
+    )
+
+    sp500_backtest = Backtest(
+        data=sp500_data,
+        strategy=BuyAndHoldStrategy(),
+        initial_capital=initial_capital
+    )
+
+    sp500_results = sp500_backtest.run()
+
+    strategy_final = strategy_results["PortfolioValue"].iloc[-1]
+    sp500_final = sp500_results["PortfolioValue"].iloc[-1]
+
+    return {
+        "strategy_final_value": strategy_final,
+        "sp500_final_value": sp500_final,
+        "strategy_return": total_return(
+            initial_capital,
+            strategy_final
+        ),
+        "sp500_return": total_return(
+            initial_capital,
+            sp500_final
         ),
     }
