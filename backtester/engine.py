@@ -128,3 +128,60 @@ def compare_with_sp500(
             sp500_final
         ),
     }
+
+def compare_all(
+    data: pd.DataFrame,
+    strategy: Strategy,
+    initial_capital: float,
+    start: str,
+    end: str
+) -> dict:
+    strategy_backtest = Backtest(
+        data=data,
+        strategy=strategy,
+        initial_capital=initial_capital
+    )
+
+    buy_hold_backtest = Backtest(
+        data=data,
+        strategy=BuyAndHoldStrategy(),
+        initial_capital=initial_capital
+    )
+
+    sp500_data = load_stock_data(
+        ticker="^GSPC",
+        start=start,
+        end=end
+    )
+
+    sp500_backtest = Backtest(
+        data=sp500_data,
+        strategy=BuyAndHoldStrategy(),
+        initial_capital=initial_capital
+    )
+
+    strategy_results = strategy_backtest.run()
+    buy_hold_results = buy_hold_backtest.run()
+    sp500_results = sp500_backtest.run()
+
+    strategy_final = strategy_results["PortfolioValue"].iloc[-1]
+    buy_hold_final = buy_hold_results["PortfolioValue"].iloc[-1]
+    sp500_final = sp500_results["PortfolioValue"].iloc[-1]
+
+    return {
+        "strategy_return": total_return(
+            initial_capital,
+            strategy_final
+        ),
+        "buy_hold_return": total_return(
+            initial_capital,
+            buy_hold_final
+        ),
+        "sp500_return": total_return(
+            initial_capital,
+            sp500_final
+        ),
+        "strategy_final_value": strategy_final,
+        "buy_hold_final_value": buy_hold_final,
+        "sp500_final_value": sp500_final,
+    }
