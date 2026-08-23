@@ -61,3 +61,22 @@ def test_moving_average_invalid_periods():
             short_period=10,
             long_period=5
         )
+
+def test_moving_average_generates_buy_signal():
+    data = pd.DataFrame(
+        {
+            "Close": [
+                10, 10, 10, 10,
+                10, 10, 20, 30
+            ]
+        }
+    )
+
+    strategy = MovingAverageStrategy(
+        short_period=2,
+        long_period=3
+    )
+
+    signals = strategy.generate_signals(data)
+
+    assert "BUY" in signals.values
