@@ -37,6 +37,8 @@ def test_backtest_endpoint():
     assert "total_return" in data
     assert "max_drawdown" in data
     assert "sharpe_ratio" in data
+    assert "risked_capital" in data
+    assert "return_on_risked_capital" in data
 
 
 def test_invalid_strategy():

@@ -9,6 +9,8 @@ from backtester.engine import (
 from backtester.exceptions import BacktestError
 from backtester.metrics import (
     max_drawdown,
+    return_on_risked_capital,
+    risked_capital,
     sharpe_ratio,
     total_return,
 )
@@ -97,6 +99,16 @@ if st.button("Run Backtest"):
             results["PortfolioValue"]
         )
 
+        risked_amount = risked_capital(
+            backtest.portfolio.trades
+        )
+
+        risked_return = return_on_risked_capital(
+            initial_capital,
+            final_value,
+            risked_amount
+        )
+
         st.subheader("Strategy Results")
 
         col1, col2, col3, col4 = st.columns(4)
@@ -121,6 +133,18 @@ if st.button("Run Backtest"):
             f"{sharpe:.2f}"
         )
 
+        risk_col1, risk_col2 = st.columns(2)
+
+        risk_col1.metric(
+            "Risked Capital",
+            f"${risked_amount:.2f}"
+        )
+
+        risk_col2.metric(
+            "Return on Risked Capital",
+            f"{risked_return:.2f}%"
+        )
+
         comparison = compare_all(
             data=data,
             strategy=strategy,
@@ -132,21 +156,6 @@ if st.button("Run Backtest"):
         st.subheader("Portfolio Performance Comparison")
 
         fig = go.Figure()
-
-        fig.add_trace(
-            go.Scatter(
-                x=comparison["strategy_results"].index,
-                y=comparison[
-                    "strategy_results"
-                ]["PortfolioValue"],
-                mode="lines",
-                name="Strategy",
-                line=dict(
-                    color="blue",
-                    width=2
-                )
-            )
-        )
 
         fig.add_trace(
             go.Scatter(
@@ -174,6 +183,22 @@ if st.button("Run Backtest"):
                 line=dict(
                     color="orange",
                     width=2
+                )
+            )
+        )
+
+        fig.add_trace(
+            go.Scatter(
+                x=comparison["strategy_results"].index,
+                y=comparison[
+                    "strategy_results"
+                ]["PortfolioValue"],
+                mode="lines",
+                name="Strategy",
+                line=dict(
+                    color="blue",
+                    width=3,
+                    dash="dash"
                 )
             )
         )

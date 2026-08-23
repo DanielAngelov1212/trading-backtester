@@ -36,3 +36,28 @@ def sharpe_ratio(
         returns.mean()
         / returns.std()
     ) * np.sqrt(252)
+
+def risked_capital(trades: list[dict]) -> float:
+    buy_amounts = [
+        trade["price"] * trade["quantity"]
+        for trade in trades
+        if trade["action"] == "BUY"
+    ]
+
+    if not buy_amounts:
+        return 0.0
+
+    return max(buy_amounts)
+
+
+def return_on_risked_capital(
+    initial_capital: float,
+    final_value: float,
+    risked_amount: float
+) -> float:
+    if risked_amount == 0:
+        return 0.0
+
+    profit = final_value - initial_capital
+
+    return (profit / risked_amount) * 100

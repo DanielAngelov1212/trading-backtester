@@ -64,6 +64,8 @@ The backtester calculates:
 - Total Return
 - Maximum Drawdown
 - Sharpe Ratio
+- Risked Capital
+- Return on Risked Capital
 
 The selected strategy is also compared against:
 

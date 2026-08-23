@@ -5,6 +5,8 @@ from backtester.data import load_stock_data
 from backtester.engine import Backtest
 from backtester.metrics import (
     max_drawdown,
+    return_on_risked_capital,
+    risked_capital,
     sharpe_ratio,
     total_return,
 )
@@ -74,6 +76,16 @@ def run_backtest(request: BacktestRequest):
             results["PortfolioValue"].iloc[-1]
         )
 
+        risked_amount = risked_capital(
+            backtest.portfolio.trades
+        )
+
+        risked_return = return_on_risked_capital(
+            request.initial_capital,
+            final_value,
+            risked_amount
+        )
+
         return {
             "ticker": request.ticker,
             "strategy": request.strategy,
@@ -83,6 +95,8 @@ def run_backtest(request: BacktestRequest):
                 request.initial_capital,
                 final_value
             ),
+            "risked_capital": risked_amount,
+            "return_on_risked_capital": risked_return,
             "max_drawdown": max_drawdown(
                 results["PortfolioValue"]
             ),

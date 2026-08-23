@@ -1,8 +1,9 @@
 pandas
+numpy
 yfinance
-pytest
-streamlit 
-plotly 
+streamlit
+plotly
 fastapi
 uvicorn
-httpx 
+httpx
+pytest

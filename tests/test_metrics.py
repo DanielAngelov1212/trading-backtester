@@ -4,6 +4,8 @@ from backtester.metrics import (
     max_drawdown,
     sharpe_ratio,
     total_return,
+    return_on_risked_capital,
+    risked_capital,
 )
 
 
@@ -48,5 +50,54 @@ def test_sharpe_ratio_constant_values():
     ])
 
     result = sharpe_ratio(values)
+
+    assert result == 0
+
+def test_risked_capital():
+    trades = [
+        {
+            "action": "BUY",
+            "price": 100,
+            "quantity": 8,
+        },
+        {
+            "action": "SELL",
+            "price": 120,
+            "quantity": 8,
+        },
+        {
+            "action": "BUY",
+            "price": 110,
+            "quantity": 9,
+        },
+    ]
+
+    result = risked_capital(trades)
+
+    assert result == 990
+
+
+def test_risked_capital_no_trades():
+    result = risked_capital([])
+
+    assert result == 0
+
+
+def test_return_on_risked_capital():
+    result = return_on_risked_capital(
+        initial_capital=1000,
+        final_value=1200,
+        risked_amount=800
+    )
+
+    assert result == 25
+
+
+def test_return_on_risked_capital_no_risk():
+    result = return_on_risked_capital(
+        initial_capital=1000,
+        final_value=1000,
+        risked_amount=0
+    )
 
     assert result == 0
