@@ -1,7 +1,11 @@
 import pandas as pd
 
 from backtester.portfolio import Portfolio
-from backtester.strategies import Strategy
+from backtester.metrics import total_return
+from backtester.strategies import (
+    BuyAndHoldStrategy,
+    Strategy,
+)
 
 
 class Backtest:
@@ -42,3 +46,39 @@ class Backtest:
             ] = self.portfolio.get_value(price)
 
         return results
+
+def compare_with_buy_and_hold(
+    data: pd.DataFrame,
+    strategy: Strategy,
+    initial_capital: float
+) -> dict:
+    strategy_backtest = Backtest(
+        data=data,
+        strategy=strategy,
+        initial_capital=initial_capital
+    )
+
+    buy_hold_backtest = Backtest(
+        data=data,
+        strategy=BuyAndHoldStrategy(),
+        initial_capital=initial_capital
+    )
+
+    strategy_results = strategy_backtest.run()
+    buy_hold_results = buy_hold_backtest.run()
+
+    strategy_final = strategy_results["PortfolioValue"].iloc[-1]
+    buy_hold_final = buy_hold_results["PortfolioValue"].iloc[-1]
+
+    return {
+        "strategy_final_value": strategy_final,
+        "buy_hold_final_value": buy_hold_final,
+        "strategy_return": total_return(
+            initial_capital,
+            strategy_final
+        ),
+        "buy_hold_return": total_return(
+            initial_capital,
+            buy_hold_final
+        ),
+    }

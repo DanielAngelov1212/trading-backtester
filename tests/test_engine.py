@@ -1,7 +1,10 @@
 import pandas as pd
 import pytest
 
-from backtester.engine import Backtest
+from backtester.engine import (
+    Backtest,
+    compare_with_buy_and_hold,
+)
 from backtester.strategies import BuyAndHoldStrategy
 from backtester.metrics import (
     max_drawdown,
@@ -102,3 +105,22 @@ def test_backtest_metrics():
     assert return_value == 20
     assert drawdown == 0
     assert sharpe >= 0
+
+def test_compare_with_buy_and_hold():
+    data = pd.DataFrame(
+        {
+            "Close": [100, 110, 120]
+        }
+    )
+
+    comparison = compare_with_buy_and_hold(
+        data=data,
+        strategy=BuyAndHoldStrategy(),
+        initial_capital=1000
+    )
+
+    assert comparison["strategy_final_value"] == 1200
+    assert comparison["buy_hold_final_value"] == 1200
+
+    assert comparison["strategy_return"] == 20
+    assert comparison["buy_hold_return"] == 20
