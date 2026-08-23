@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from backtester.indicators import sma, rsi 
+from backtester.indicators import sma, rsi, macd
 
 import pandas as pd
 
@@ -100,6 +100,55 @@ class RSIStrategy(Strategy):
                 signals.iloc[i] = "BUY"
 
             elif rsi_values.iloc[i] > self.overbought:
+                signals.iloc[i] = "SELL"
+
+        return signals
+
+class MACDStrategy(Strategy):
+
+    def __init__(
+        self,
+        short_period: int = 12,
+        long_period: int = 26,
+        signal_period: int = 9
+    ) -> None:
+        if short_period <= 0 or long_period <= 0 or signal_period <= 0:
+            raise ValueError("Periods must be positive.")
+
+        if short_period >= long_period:
+            raise ValueError(
+                "Short period must be smaller than long period."
+            )
+
+        self.short_period = short_period
+        self.long_period = long_period
+        self.signal_period = signal_period
+
+    def generate_signals(self, data: pd.DataFrame) -> pd.Series:
+        macd_line, signal_line = macd(
+            data["Close"],
+            short_period=self.short_period,
+            long_period=self.long_period,
+            signal_period=self.signal_period,
+        )
+
+        signals = pd.Series("HOLD", index=data.index)
+
+        for i in range(1, len(data)):
+            crossed_up = (
+                macd_line.iloc[i - 1] <= signal_line.iloc[i - 1]
+                and macd_line.iloc[i] > signal_line.iloc[i]
+            )
+
+            crossed_down = (
+                macd_line.iloc[i - 1] >= signal_line.iloc[i - 1]
+                and macd_line.iloc[i] < signal_line.iloc[i]
+            )
+
+            if crossed_up:
+                signals.iloc[i] = "BUY"
+
+            elif crossed_down:
                 signals.iloc[i] = "SELL"
 
         return signals

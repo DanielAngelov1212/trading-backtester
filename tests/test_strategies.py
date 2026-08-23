@@ -3,6 +3,7 @@ import pytest
 
 from backtester.strategies import (
     BuyAndHoldStrategy,
+    MACDStrategy,
     MovingAverageStrategy,
     RSIStrategy,
 )
@@ -123,4 +124,57 @@ def test_rsi_strategy_invalid_thresholds():
         RSIStrategy(
             oversold=80,
             overbought=20
+        )
+
+def test_macd_strategy_returns_signals():
+    data = pd.DataFrame(
+        {
+            "Close": [
+                10, 10, 10, 10, 10,
+                11, 12, 13, 14, 15,
+                14, 13, 12, 11, 10
+            ]
+        }
+    )
+
+    strategy = MACDStrategy(
+        short_period=2,
+        long_period=4,
+        signal_period=2
+    )
+
+    signals = strategy.generate_signals(data)
+
+    assert len(signals) == len(data)
+    assert set(signals.unique()).issubset(
+        {"BUY", "SELL", "HOLD"}
+    )
+
+
+def test_macd_strategy_generates_signal():
+    data = pd.DataFrame(
+        {
+            "Close": [
+                10, 10, 10, 10, 10,
+                12, 14, 16, 18, 20
+            ]
+        }
+    )
+
+    strategy = MACDStrategy(
+        short_period=2,
+        long_period=4,
+        signal_period=2
+    )
+
+    signals = strategy.generate_signals(data)
+
+    assert "BUY" in signals.values
+
+
+def test_macd_strategy_invalid_periods():
+    with pytest.raises(ValueError):
+        MACDStrategy(
+            short_period=10,
+            long_period=5
         )
