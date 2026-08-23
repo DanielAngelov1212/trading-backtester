@@ -1,7 +1,7 @@
 import pandas as pd
 import pytest
 
-from backtester.indicators import sma, ema, rsi
+from backtester.indicators import sma, ema, rsi, macd
 
 
 def test_sma():
@@ -54,3 +54,41 @@ def test_rsi_invalid_period():
 
     with pytest.raises(ValueError):
         rsi(prices, 0)
+
+def test_macd():
+    prices = pd.Series([
+        10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19
+    ])
+
+    macd_line, signal_line = macd(
+        prices,
+        short_period=3,
+        long_period=5,
+        signal_period=2
+    )
+
+    assert len(macd_line) == len(prices)
+    assert len(signal_line) == len(prices)
+
+
+def test_macd_invalid_period():
+    prices = pd.Series([10, 20, 30])
+
+    with pytest.raises(ValueError):
+        macd(
+            prices,
+            short_period=0,
+            long_period=5
+        )
+
+
+def test_macd_short_period_greater_than_long():
+    prices = pd.Series([10, 20, 30])
+
+    with pytest.raises(ValueError):
+        macd(
+            prices,
+            short_period=10,
+            long_period=5
+        )
