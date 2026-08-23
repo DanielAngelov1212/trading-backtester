@@ -4,6 +4,7 @@ import pytest
 from backtester.strategies import (
     BuyAndHoldStrategy,
     MovingAverageStrategy,
+    RSIStrategy,
 )
 
 
@@ -80,3 +81,46 @@ def test_moving_average_generates_buy_signal():
     signals = strategy.generate_signals(data)
 
     assert "BUY" in signals.values
+
+def test_rsi_strategy_returns_signals():
+    data = pd.DataFrame(
+        {
+            "Close": [
+                10, 9, 8, 7, 6,
+                7, 8, 9, 10, 11
+            ]
+        }
+    )
+
+    strategy = RSIStrategy(period=3)
+
+    signals = strategy.generate_signals(data)
+
+    assert len(signals) == len(data)
+    assert set(signals.unique()).issubset(
+        {"BUY", "SELL", "HOLD"}
+    )
+
+
+def test_rsi_strategy_generates_buy_signal():
+    data = pd.DataFrame(
+        {
+            "Close": [
+                10, 9, 8, 7, 6, 5
+            ]
+        }
+    )
+
+    strategy = RSIStrategy(period=3)
+
+    signals = strategy.generate_signals(data)
+
+    assert "BUY" in signals.values
+
+
+def test_rsi_strategy_invalid_thresholds():
+    with pytest.raises(ValueError):
+        RSIStrategy(
+            oversold=80,
+            overbought=20
+        )
